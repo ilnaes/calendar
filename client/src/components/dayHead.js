@@ -1,5 +1,9 @@
 import React, { useContext } from 'react'
 import { AppContext } from '../context/appcontext'
+import { getDay } from '../util'
+import DayEventCard from './dayeventCard'
+
+const MINSPERDAY = 60 * 24
 
 export default function DayHeader(props) {
   const { appState } = useContext(AppContext)
@@ -34,12 +38,28 @@ export default function DayHeader(props) {
           </div>
           <div
             style={{
-              height: '3em',
+              minHeight: '1em',
+              height: '100%',
+              paddingLeft: '0.1em',
               width: '100%',
               borderLeft: '1px solid #DDD',
               borderBottom: '1px solid #BBB'
             }}
-          ></div>
+          >
+            {props.events ? (
+              props.events
+                .filter(
+                  x =>
+                    !(
+                      getDay(x.start) > getDay(props.start + i * MINSPERDAY) ||
+                      getDay(x.end) < getDay(props.start + i * MINSPERDAY)
+                    )
+                )
+                .map((x, i) => <DayEventCard key={i} event={x} />)
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       ))}
     </div>

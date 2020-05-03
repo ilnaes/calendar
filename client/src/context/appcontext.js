@@ -15,7 +15,7 @@ export const init = {
   },
   visibleCals: [],
   calendars: [],
-  isCreating: null,
+  isCreating: null, // TODO: rename this
   events: {}
 }
 

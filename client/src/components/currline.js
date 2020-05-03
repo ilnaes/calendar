@@ -23,7 +23,7 @@ export default function CurrLine() {
         position: 'absolute',
         width: '100%',
         top: top + '%',
-        zIndex: '10'
+        zIndex: '2'
       }}
     ></div>
   )

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import EventCard from './eventCard'
 import CurrLine from './currline'
+import { getDay } from '../util'
 
 let hours = []
 for (let i = 0; i < 24; i++) {
@@ -10,10 +11,13 @@ for (let i = 0; i < 24; i++) {
 export const DaytimeCol = props => {
   let divElement = useRef(null)
 
-  let getDay = x => Math.floor((x - props.start) / (60 * 24))
-
   let dayEvents = props.events
-    ? props.events.filter(x => getDay(x.start) === props.day)
+    ? props.events.filter(
+        x =>
+          !x.isdayEvent &&
+          getDay(x.start - props.start) === props.day &&
+          getDay(x.end - props.start) === props.day
+      )
     : null
 
   const mins =

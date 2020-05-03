@@ -6,6 +6,7 @@ import { DaytimeCol } from './daytimeCol'
 import DayHeader from './dayHead'
 import { CreateEvent } from './createEvent'
 import Markers from './markers'
+import { arrEqual, getDay } from '../util'
 
 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
@@ -22,39 +23,6 @@ const GET_EVENTS = gql`
   }
 `
 
-function arrEqual(a, b) {
-  if (!a || !b) return false
-  if (a.length !== b.length) return false
-
-  for (let i = 0; i < a.length; i++) {
-    if (!isEquiv(a[i], b[i])) return false
-  }
-
-  return true
-}
-
-function isEquiv(a, b) {
-  if (!a || !b) {
-    return false
-  }
-  let aProps = Object.getOwnPropertyNames(a)
-  let bProps = Object.getOwnPropertyNames(b)
-
-  if (aProps.length !== bProps.length) {
-    return false
-  }
-
-  for (let i = 0; i < aProps.length; i++) {
-    let propName = aProps[i]
-
-    if (a[propName] !== b[propName]) {
-      return false
-    }
-  }
-
-  return true
-}
-
 export default function CalBody() {
   const divRef = useRef(null)
   let { appState, updateApp } = useContext(AppContext)
@@ -66,7 +34,7 @@ export default function CalBody() {
   sun.setHours(0)
   sun.setMinutes(0)
   sun.setDate(todate.getDate() + 7 * appState.delta.week - today)
-  const start = Math.floor(sun.getTime() / MILLIPERMIN)
+  const start = Math.floor(sun.getTime() / MILLIPERMIN) // minutes
 
   const sat = new Date(todate)
   sat.setHours(23)
@@ -81,19 +49,7 @@ export default function CalBody() {
     pollInterval: 2000
   })
 
-  let getDate = i => {
-    let x = new Date(todate)
-    x.setDate(todate.getDate() + i)
-    return x.getDate()
-  }
-
-  let index = appState.view + appState.delta[appState.view]
-  let display = appState.events[index]
-    ? appState.events[index]
-    : loading
-    ? null
-    : data.searchEvents
-
+  // initial scroll of calendar
   useEffect(() => {
     const now = new Date()
     let tohourMin =
@@ -110,6 +66,7 @@ export default function CalBody() {
     }
   }, [divRef])
 
+  // memoize events in the appState
   useEffect(() => {
     let interval = setInterval(() => {
       updateApp(prev => {
@@ -129,6 +86,22 @@ export default function CalBody() {
     }
   })
 
+  let getDate = i => {
+    let x = new Date(todate)
+    x.setDate(todate.getDate() + i)
+    return x.getDate()
+  }
+
+  let index = appState.view + appState.delta[appState.view]
+  let display = appState.events[index] ? appState.events[index] : null
+
+  let dayEvents = null
+  if (display) {
+    dayEvents = display.filter(
+      x => getDay(x.start) !== getDay(x.end) // TODO: isDayEvent
+    )
+  }
+
   return (
     <div
       style={{
@@ -137,13 +110,14 @@ export default function CalBody() {
         width: '100%'
       }}
     >
-      {appState.isCreating ? <CreateEvent /> : <></>}
       <DayHeader
         today={today}
         days={days.map((x, i) => ({
           day: x,
           date: getDate(i - today + appState.delta.week * 7)
         }))}
+        events={dayEvents}
+        start={start}
       />
       <div
         style={{
@@ -154,6 +128,7 @@ export default function CalBody() {
         ref={divRef}
       >
         <div className="flex-row">
+          {appState.isCreating ? <CreateEvent /> : <></>}
           <Markers />
           <div
             className="flex-row"

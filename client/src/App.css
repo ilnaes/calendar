@@ -1,0 +1,99 @@
+input[type='checkbox'] {
+  display: none;
+}
+
+input[type='checkbox'] + label {
+  display: inline-block;
+  position: relative;
+  padding: 8px;
+  background-color: #fff;
+  border: 2px solid #5cb85c;
+  border-radius: 4px;
+}
+
+input[type='checkbox']:checked + label {
+  background-color: #5cb85c;
+  color: #fff;
+}
+
+input[type='checkbox']:checked + label:after {
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  color: #fff;
+  content: '\2714';
+  font-size: 10px;
+}
+
+.marker {
+  min-width: 4em;
+  max-width: 4em;
+}
+.clickable {
+  cursor: pointer;
+}
+
+.day-col {
+  text-align: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em;
+  min-width: 5em;
+}
+
+.day-font {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #555;
+}
+
+.today-font {
+  color: #3d6ec9;
+}
+
+.datepicker {
+  font-size: 1.5em;
+  margin: 0.1em;
+  padding: 0.4em 0.3em 0.4em 0.3em;
+  width: 1.4em;
+  border-radius: 50%;
+}
+
+.today-datepicker {
+  background-color: #3d6ec9;
+  color: #fff;
+}
+
+.headerBar {
+  border-bottom: 1px solid black;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-event {
+  padding: 2em;
+  background-color: #fff;
+  color: #000;
+  z-index: 3;
+}
+
+.add-event {
+  padding: 2em;
+  background-color: #fff;
+  z-index: 3;
+}
+
+.event-card {
+  color: #fff;
+  font-size: 0.75em;
+  border-radius: 0.25em;
+  background-color: #3d6ec9;
+}

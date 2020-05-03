@@ -139,7 +139,7 @@ const Calendar = new GraphQLObjectType({
     },
     events: {
       type: new GraphQLList(Event),
-      async resolve(p, a, context) {
+      async resolve(_p, _a, context) {
         cals = context.db.collection('calendars')
         let u = await cals.findOne({ _id: new ObjectID(p.id) })
         return { id: u.events }
@@ -153,7 +153,7 @@ const Query = new GraphQLObjectType({
   fields: {
     calendars: {
       type: new GraphQLList(Calendar),
-      async resolve(p, a, context) {
+      async resolve(_p, _a, context) {
         let r = await context.db
           .collection('calendars')
           .find({ creator: context.userid })
@@ -171,7 +171,7 @@ const Query = new GraphQLObjectType({
           type: new GraphQLNonNull(EventSearch)
         }
       },
-      async resolve(p, args, context) {
+      async resolve(_p, args, context) {
         return await searchEventResolver(context.userid, args, context.mongo)
       }
     }

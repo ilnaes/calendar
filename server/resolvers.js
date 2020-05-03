@@ -3,8 +3,16 @@ const { ObjectID } = require('mongodb')
 exports.searchEventResolver = async (uid, args, client) => {
   const events = client.db('calendar').collection('events')
   const users = client.db('calendar').collection('users')
+
   let filters = {
-    start: { $gte: args.params.start, $lte: args.params.end }
+    $or: [
+      {
+        start: { $gte: args.params.start, $lte: args.params.end }
+      },
+      {
+        end: { $gte: args.params.start, $lte: args.params.end }
+      }
+    ]
   }
   if (args.params.cids) {
     filters.cid = {

@@ -37,7 +37,23 @@ function getDay(x) {
   return Math.floor(x / (60 * 24))
 }
 
+// returns the Saturday after the date x
+function toSat(x) {
+  let y = new Date(x)
+  y.setDate(x.getDate() - x.getDay() + 7)
+  return y
+}
+
+// returns the Sunday before the date x
+function toSun(x) {
+  let y = new Date(x)
+  y.setDate(x.getDate() - x.getDay())
+  return y
+}
+
 module.exports = {
   arrEqual,
-  getDay
+  getDay,
+  toSun,
+  toSat
 }

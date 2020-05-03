@@ -6,7 +6,7 @@ import { DaytimeCol } from './daytimeCol'
 import DayHeader from './dayHead'
 import { CreateEvent } from './createEvent'
 import Markers from './markers'
-import { arrEqual, getDay } from '../util'
+import { arrEqual, getDay, toSat, toSun } from '../util'
 
 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
@@ -27,19 +27,18 @@ export default function CalBody() {
   const divRef = useRef(null)
   let { appState, updateApp } = useContext(AppContext)
 
-  const todate = new Date()
-  const today = todate.getDay()
+  let basedate = new Date()
+  let today = basedate.getDay()
+  basedate.setDate(basedate.getDate() + 7 * appState.delta.week)
 
-  const sun = new Date(todate)
+  const sun = toSun(basedate)
   sun.setHours(0)
   sun.setMinutes(0)
-  sun.setDate(todate.getDate() + 7 * appState.delta.week - today)
   const start = Math.floor(sun.getTime() / MILLIPERMIN) // minutes
 
-  const sat = new Date(todate)
+  const sat = toSat(basedate)
   sat.setHours(23)
   sat.setMinutes(59)
-  sat.setDate(todate.getDate() + 7 * appState.delta.week + 7 - today)
   const end = Math.floor(sat.getTime() / MILLIPERMIN)
 
   const { loading, data } = useQuery(GET_EVENTS, {
@@ -87,8 +86,8 @@ export default function CalBody() {
   })
 
   let getDate = i => {
-    let x = new Date(todate)
-    x.setDate(todate.getDate() + i)
+    let x = new Date(basedate)
+    x.setDate(basedate.getDate() + i)
     return x.getDate()
   }
 
@@ -114,7 +113,7 @@ export default function CalBody() {
         today={today}
         days={days.map((x, i) => ({
           day: x,
-          date: getDate(i - today + appState.delta.week * 7)
+          date: getDate(i - today)
         }))}
         events={dayEvents}
         start={start}

@@ -7,6 +7,7 @@ const MINSPERDAY = 60 * 24
 
 export default function DayHeader(props) {
   const { appState } = useContext(AppContext)
+  console.log('today: ' + props.today)
 
   return (
     <div
@@ -30,15 +31,15 @@ export default function DayHeader(props) {
           <div
             className={
               appState.delta[appState.view] === 0 && i === props.today
-                ? 'datepicker today-datepicker clickable'
-                : 'datepicker clickable'
+                ? 'datepicker circle today-datepicker clickable'
+                : 'datepicker circle clickable'
             }
           >
             {x.date}
           </div>
           <div
             style={{
-              minHeight: '1em',
+              minHeight: '1.5em',
               height: '100%',
               paddingLeft: '0.1em',
               width: '100%',

@@ -1,9 +1,12 @@
 import React, { useContext } from 'react'
 import { AppContext } from '../context/appcontext'
 import MonthCard from './month'
+import { toSun } from '../util'
 
 export default function Menu() {
-  let { appState, updateApp, toggleVisible } = useContext(AppContext)
+  let { appState, updateApp, incrDelta, decrDelta, toggleVisible } = useContext(
+    AppContext
+  )
   let today = new Date()
 
   function toggle(e) {
@@ -11,7 +14,20 @@ export default function Menu() {
   }
 
   let callback = x => {
-    window.alert(x)
+    x.setMinutes(1)
+    let sun = toSun(today)
+    sun.setHours(0)
+    sun.setMinutes(0)
+    sun.setSeconds(0)
+    let del = Math.floor(
+      (x.getTime() - sun.getTime()) / (1e3 * 60 * 60 * 24 * 7)
+    )
+
+    updateApp(prev => {
+      let res = prev.delta
+      res['week'] = del
+      return { delta: res }
+    })
   }
 
   if (appState.isMenuVisible) {
@@ -35,9 +51,11 @@ export default function Menu() {
           + Create
         </div>
         <MonthCard
-          month={today.getMonth() + 1 + appState.delta.month}
-          year={1900 + today.getYear()}
+          month={today.getMonth() + appState.delta.month}
+          year={today.getYear()}
           callback={callback}
+          incr={() => incrDelta('month')}
+          decr={() => decrDelta('month')}
         />
         <div className="flex-col" style={{ padding: '1em' }}>
           {appState.calendars.map(x => (

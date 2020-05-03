@@ -53,18 +53,18 @@ export class AppProvider extends React.Component {
     }))
   }
 
-  incrDelta() {
+  incrDelta(mode) {
     this.setState(prev => {
       let resDelta = prev.delta
-      resDelta[prev.view]++
+      resDelta[mode]++
       return { delta: resDelta }
     })
   }
 
-  decrDelta() {
+  decrDelta(mode) {
     this.setState(prev => {
       let resDelta = prev.delta
-      resDelta[prev.view]--
+      resDelta[mode]--
       return { delta: resDelta }
     })
   }
@@ -72,7 +72,8 @@ export class AppProvider extends React.Component {
   zeroDelta() {
     this.setState(prev => {
       let resDelta = prev.delta
-      resDelta[prev.view] = 0
+      resDelta['week'] = 0
+      resDelta['month'] = 0
       return { delta: resDelta }
     })
   }

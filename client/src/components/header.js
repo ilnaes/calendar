@@ -24,17 +24,17 @@ export default function CalHeader() {
         </div>
         <div
           className="clickable"
-          style={{ padding: '0.5em' }}
-          onClick={decrDelta}
+          style={{ padding: '0.5em', fontSize: '1.5em' }}
+          onClick={() => decrDelta('week')}
         >
-          &lt;
+          &#8249;
         </div>
         <div
           className="clickable"
-          style={{ padding: '0.5em' }}
-          onClick={incrDelta}
+          style={{ padding: '0.5em', fontSize: '1.5em' }}
+          onClick={() => incrDelta('week')}
         >
-          &gt;
+          &#8250;
         </div>
         <div style={{ flex: 1 }}>Calendar</div>
         <button

@@ -68,16 +68,16 @@ export default function CalBody() {
   // memoize events in the appState
   useEffect(() => {
     let interval = setInterval(() => {
-      updateApp(prev => {
-        if (!loading) {
+      if (!loading) {
+        updateApp(prev => {
           let events = prev.events[prev.view + prev.delta[prev.view]]
           if (!arrEqual(events, data.searchEvents)) {
             let res = { ...prev.events }
             res[prev.view + prev.delta[prev.view]] = data.searchEvents
             return { events: res }
           }
-        }
-      })
+        })
+      }
     }, 1000)
 
     return () => {
@@ -86,13 +86,15 @@ export default function CalBody() {
   })
 
   let getDate = i => {
-    let x = new Date(basedate)
-    x.setDate(basedate.getDate() + i)
+    let x = new Date(sun)
+    x.setDate(sun.getDate() + i)
     return x.getDate()
   }
 
   let index = appState.view + appState.delta[appState.view]
-  let display = appState.events[index] ? appState.events[index] : null
+  let display = appState.events[index]
+    ? appState.events[index].filter(x => appState.visibleCals.includes(x.cid))
+    : null
 
   let dayEvents = null
   if (display) {
@@ -113,7 +115,7 @@ export default function CalBody() {
         today={today}
         days={days.map((x, i) => ({
           day: x,
-          date: getDate(i - today)
+          date: getDate(i)
         }))}
         events={dayEvents}
         start={start}
